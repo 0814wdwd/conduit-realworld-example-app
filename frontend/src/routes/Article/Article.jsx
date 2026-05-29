@@ -7,6 +7,7 @@ import ArticleTags from "../../components/ArticleTags";
 import BannerContainer from "../../components/BannerContainer";
 import { useAuth } from "../../context/AuthContext";
 import getArticle from "../../services/getArticle";
+import ReactionsBar from "../../components/ReactionsBar";
 
 function Article() {
   const { state } = useLocation();
@@ -41,6 +42,7 @@ function Article() {
           <div className="col-md-12">
             {body && <Markdown options={{ forceBlock: true }}>{body}</Markdown>}
             <ArticleTags tagList={tagList} />
+            <ReactionsBar slug={article.slug} initialReactions={article.reactions ? (Array.isArray(article.reactions) ? article.reactions.reduce((acc, r) => { acc[r.emoji] = (acc[r.emoji] || 0) + 1; return acc; }, {}) : article.reactions) : {}} initialViewerReactions={article.viewerReactions || []} />
           </div>
         </div>
 

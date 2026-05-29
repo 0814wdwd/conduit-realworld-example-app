@@ -165,6 +165,8 @@ const singleArticle = async (req, res, next) => {
     await appendFollowers(loggedUser, article);
     await appendFavorites(loggedUser, article);
 
+    const reactionsData = await Reactions.findAll({ where: { articleId: article.id } });
+    article.dataValues.reactions = reactionsData;
     res.json({ article });
   } catch (error) {
     next(error);
@@ -232,7 +234,65 @@ const deleteArticle = async (req, res, next) => {
   }
 };
 
+//* Toggle Article Reactions
+const toggleReactions = async (req, res, next) => {
+  try {
+    const { loggedUser } = req;
+    if (!loggedUser) throw new UnauthorizedError();
+
+    const { slug } = req.params;
+    const { emoji } = req.body;
+    if (!emoji) throw new FieldRequiredError("Emoji");
+
+    const article = await Article.findOne({ where: { slug } });
+    if (!article) throw new NotFoundError("Article");
+
+    const existingReaction = await Reactions.findOne({
+      where: {
+        userId: loggedUser.id,
+        articleId: article.id,
+        emoji: emoji
+      }
+    });
+
+    if (existingReaction) {
+      await existingReaction.destroy();
+    } else {
+      await Reactions.create({
+        userId: loggedUser.id,
+        articleId: article.id,
+        emoji: emoji
+      });
+    }
+
+    const { Sequelize } = require("../models");
+    const aggregatedReactions = await Reactions.findAll({
+      where: { articleId: article.id },
+      attributes: ["emoji", [Sequelize.fn("COUNT", Sequelize.col("emoji")), "count"]],
+      group: "emoji",
+      raw: true
+    });
+
+    const reactions = {};
+    aggregatedReactions.forEach(item => {
+      reactions[item.emoji] = parseInt(item.count);
+    });
+
+    const userReactions = await Reactions.findAll({
+      where: { userId: loggedUser.id, articleId: article.id },
+      attributes: ["emoji"],
+      raw: true
+    });
+    const viewerReactions = userReactions.map(item => item.emoji);
+
+    res.json({ reactions, viewerReactions });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
+  toggleReactions,
   allArticles,
   createArticle,
   singleArticle,
