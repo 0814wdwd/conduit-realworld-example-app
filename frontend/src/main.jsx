@@ -14,6 +14,7 @@ import HomeArticles from "./routes/HomeArticles";
 import Login from "./routes/Login";
 import NotFound from "./routes/NotFound";
 import Profile from "./routes/Profile/Profile";
+import AboutMeTabContent from "./components/AboutMeTabContent";
 import ProfileArticles from "./routes/Profile/ProfileArticles";
 import ProfileFavArticles from "./routes/Profile/ProfileFavArticles";
 import Settings from "./routes/Settings";
@@ -44,7 +45,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
             <Route path="profile/:username" element={<Profile />}>
               <Route index element={<ProfileArticles />} />
-              <Route path="favorites" element={<ProfileFavArticles />} />
+<Route path="favorites" element={<ProfileFavArticles />} />
+<Route path="about" element={<AboutMeTabContent />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
