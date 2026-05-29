@@ -8,6 +8,7 @@ const {
   updateArticle,
   deleteArticle,
   articlesFeed,
+  toggleReactions,
 } = require("../controllers/articles");
 
 //? All Articles - by Author/by Tag/Favorited by user
@@ -22,6 +23,7 @@ router.get("/:slug", verifyToken, singleArticle);
 router.put("/:slug", verifyToken, updateArticle);
 //* Delete Article
 router.delete("/:slug", verifyToken, deleteArticle);
+router.post("/:slug/reactions", verifyToken, toggleReactions);
 
 const favoritesRoutes = require("./articles/favorites");
 const commentsRoutes = require("./articles/comments");
