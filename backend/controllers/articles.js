@@ -165,6 +165,8 @@ const singleArticle = async (req, res, next) => {
     await appendFollowers(loggedUser, article);
     await appendFavorites(loggedUser, article);
 
+    const reactionsData = await Reactions.findAll({ where: { articleId: article.id } });
+    article.dataValues.reactions = reactionsData;
     res.json({ article });
   } catch (error) {
     next(error);
