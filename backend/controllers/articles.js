@@ -232,7 +232,71 @@ const deleteArticle = async (req, res, next) => {
   }
 };
 
+//* Toggle Article Reactions
+const toggleReactions = async (req, res, next) => {
+  try {
+    const { loggedUser } = req;
+    if (!loggedUser) throw new UnauthorizedError();
+
+    const { slug } = req.params;
+    const { emoji } = req.body;
+    if (!emoji) throw new FieldRequiredError("An emoji");
+
+    const article = await Article.findOne({ where: { slug } });
+    if (!article) throw new NotFoundError("Article");
+
+    const existingReaction = await Reactions.findOne({
+      where: {
+        userId: loggedUser.id,
+        articleId: article.id,
+        emoji: emoji
+      }
+    });
+
+    if (existingReaction) {
+      await existingReaction.destroy();
+    } else {
+      await Reactions.create({
+        userId: loggedUser.id,
+        articleId: article.id,
+        emoji: emoji
+      });
+    }
+
+    const { fn, col } = require("sequelize");
+    // Aggregate total count for all emojis on this article
+    const reactionGroups = await Reactions.findAll({
+      where: { articleId: article.id },
+      attributes: [
+        "emoji",
+        [fn("COUNT", col("emoji")), "count"]
+      ],
+      group: "emoji"
+    });
+
+    const reactions = {};
+    for (const group of reactionGroups) {
+      reactions[group.emoji] = parseInt(group.dataValues.count);
+    }
+
+    // Get all emojis current user has reacted with for this article
+    const userReactions = await Reactions.findAll({
+      where: {
+        userId: loggedUser.id,
+        articleId: article.id
+      },
+      attributes: ["emoji"]
+    });
+    const viewerReactions = userReactions.map(item => item.emoji);
+
+    res.json({ reactions, viewerReactions });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
+  toggleReactions,
   allArticles,
   createArticle,
   singleArticle,
