@@ -1524,3 +1524,60 @@ footer > .container {
   margin-right: 5px;
   cursor: pointer;
 }
+
+
+/* ===== Auto-generated for AboutMeTabContent ===== */
+
+.profile-page {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.5rem 0;
+}
+
+.profile-page button {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.profile-page button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.profile-page button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.profile-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profile-page button.active {
+  background-color: var(--brand-light, #7dd88b);
+  border-color: var(--brand, #33aa44);
+  color: var(--brand-dark, #237630);
+  font-weight: 600;
+}
+
+.profile-page .counter,
+.profile-page [class*="counter"],
+.profile-page [class*="count"] {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.78em;
+  color: #666;
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 10px;
+  min-width: 1.5em;
+  text-align: center;
+}
+
+.profile-page i[class^="ion-"] {
+  margin-right: 0.2rem;
+  font-size: 1.05em;
+}
+
+.profile-page .offset-md-1 { /* TODO design: offset-md-1 */ }
