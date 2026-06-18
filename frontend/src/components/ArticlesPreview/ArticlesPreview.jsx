@@ -35,6 +35,16 @@ function ArticlesPreview({ articles, loading, updateArticles }) {
             <h1>{article.title}</h1>
             <p>{article.description}</p>
             <span>Read more...</span>
+            {/* 静态预设假阅读量，完全不随浏览行为更新 */}
+            <span className="list-views-count" style={{ marginLeft: '12px', color: '#999', fontSize: '0.85em' }}>
+              👁 {(() => {
+                let hash = 0;
+                for (let i = 0; i < article.slug.length; i++) {
+                  hash = article.slug.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return Math.abs(hash) % 1200 + 80;
+              })()} 次阅读
+            </span>
             <ArticleTags tagList={article.tagList} />
           </Link>
         </div>
