@@ -7,8 +7,13 @@ function TagButton({ tagsList }) {
     changeTab(e, "tag");
   };
 
-  return tagsList.slice(0, 50).map((name) => (
-    <button className="tag-pill tag-default" key={name} onClick={handleClick}>
+  return tagsList.slice(0, 5).map((name, index) => (
+    <button
+      className={`tag-pill tag-default${index < 5 ? " tag-hot" : ""}`}
+      key={name}
+      onClick={handleClick}
+    >
+      {index < 5 && <span className="tag-hot-badge" aria-label="热门标签">🔥</span>}
       {name}
     </button>
   ));
